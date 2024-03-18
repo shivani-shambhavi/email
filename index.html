@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spam Detection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            color: #333;
+            text-align: center;
+        }
+
+        h1 {
+            margin-top: 50px;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        input[type="text"] {
+            width: 300px;
+            padding: 8px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        input[type="submit"] {
+            padding: 8px 16px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .result {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+    </style>
+</head>
+<body>
+    <h1>Spam Detection</h1>
+    <form id="spamForm">
+        <label for="sentence">Enter a sentence:</label><br>
+        <input type="text" id="sentence" name="sentence"><br>
+        <input type="submit" value="Check">
+    </form>
+    <div id="result" class="result"></div>
+
+    <script>
+        const form = document.getElementById('spamForm');
+        const resultDiv = document.getElementById('result');
+        const wordsToCompare = ['grew', 'ricardol', 'jamaica', 'parterre', 'consegnato', 'serious', 'infestation', 'surethat', 'ginnery', 'uprightness', 'warm', 'promotoins', 'posting', 'homme', 'outspeak', 'cabinet', 'laayawrw', 'comprehensive', 'cleared', 'importantly', 'exact', 'kelly', 'entertaining', 'upfront', '530', 'turning', 'qbs', 'bee', 'tras', 'distribution', 'gravity', 'complement', 'simulates', 'calls', 'powerhouse', 'autrey', '67', 'huzzah', 'goiive', 'desk', 'leader', 'pcqxao', 'babies', 'thank', 'indicators', 'ammunition', 'decay', 'cumshots', 'acts', 'esto', 'wirelessly', 'food', 'destitution', 'beats', 'immigration', 'sportsbook', 'shake', 'ones', 'hcdc', 'folder', 'sinatown', 'probiems', 'nl', 'coulter', 'yule', 'manuscript', 'fools', 'jeanne', 'geographical', 'drinks', '23133', 'approval', 'temel', 'stories', 'eas', 'perished', 'aspire', 'estamos', 'partsong', 'products', 'colleagues', 'face', 'occasioning', 'resolving', 'entertained', 'vestured', 'rong', 'speciaily', 'confronted', 'state', 'player', '217', 'drove', 'asylum', 'incubator', 'interference', 'beautiful', 'motivate', 'nm', 'deiiver', 'leaves', 'trabajo', 'exports', 'removing', 'juiy', 'sensible', '284', 'trafficentral', 'nameable', 'lending', 'comments', 'contribute', '970', 'hal', 'royce', 'magnus', 'dvr', 'sampling', 'england', 'functional', 'gareth', 'argentiferous', 'welcome', 'caviar', 'familiar', 'magazine', 'jose', 'calmly', 'prlce', 'availible', 'saying', '97438', 'winchester', 'rhode', 'anotther', 'sparing', 'uz', 'biomedical', 'whose', 'andordered', '1013', 'commentary', 'hired', 'retrievals', 'heartwarmers', 'pangs', 'expensive', 'peopleyou', 'lenticular', 'dispense', 'forbidden', 'margarette', 'ey', 'telescope', 'liners', 'bedroom', 'ters', 'feet', '8900', 'injustice', 'color', 'accelerated', 'bb', 'recorded', 'degree', 'crewmen', 'adoption', 'allmerica', 'marathon', 'waited', 'lllustrator', 'unjust', 'newtonian', 'sink', 'sn', '924', 'accommodations', 'elements', 'fruitful', 'cor', 'aurez', '1980', '463', 'shingles', 'exhibitor', 'heaven', 'pcb', 'victim', 'waukesha', 'fishing', '412', '213', 'electromagnetic', 'oswego', 'weathered', 'prohibited', 'propulsion', 'capacity', 'au', 'benachrichtung', '90230', 'barrett', 'insufficient', '4018', 'seizecars', 'seventy', 'dod', 'van', 'stickiest', 'nim', 'enters', 'resent', 'emerged', '295', 'ascensional', 'canadian', 'indices', 'https', 'desperate', 'tagboard', 'lotteries', 'abstractive', '9318', 'motorised', '3500', 'anagrafica', 'slaughters', 'merchandising', 'nigeria', 'automate', 'chips', '1093', 'cancer', 'unsettled', 'spool', 'overworked', 'enables', '7915', 'pearl', 'jrgbm', 'retroscreen', 'consular', '20032', 'youthful', '1450', 'freezing', 'nbc', 'kitlelere', 'lussv', 'arabia', 'exoc', 'freeler', 'unrestricted', 'concept', 'carpetbagger', 'odbc', 'nonsuccess', 'maxmusclesf', '19673', 'school', 'is', 'chriss', 'contents', '6609', 'corbel', '870', 'floating', 'ytu', 'betray', 'mausoleum', 'list', 'nvda', '104', 'avant', 'followings', 'convive', 'moments', 'les', 'inwove', 'examples', 'ipaq', 'enacted', 'instruments', 'unattainable', 'coffey', 'publicly', 'argent', 'therefore', 'delete', 'sensitivity', '232', 'quintessential', 'shark', 'alexander', 'legality', 'jkm', 'acoplamentos', 'spreadsheet', 'freight', 'jon', 'unlikely', 'local', 'telefonica', 'blackman', 'divine', 'exercises', 'emailaddresses', 'nosso', 'ascribe', 'miliion', 'underbuy', 'graph', 'memories', 'anger', 'santistatextil', 'nevertheless', 'airing', 'irish', 'tra??o', 'travelogue', 'frauds', 'silva', '?yi', 'unavoidable', '567842', 'root', 'cocw', 'certified', 'screechy', 'corruption', 'occur', 'eastman', 'bacchanal', 'communicates', 'premier', 'as', 'hum', 'suza', 'usenet', 'locating', 'bestoffer', 'intentionally', 'iliustrator', 'fetter', 'float', 'ven', 'bmw', 'hanging', 'charge', 'excited', 'ldupnr', 'becuase', 'thick', 'acquired', 'hoot', 'keyword', 'impetuous', 'virtu', '0500', 'physically', 'decreasing', 'liveried', 'assets', 'cotizaci?n', 'said', 'reached', 'approve', 'spartanburg', 'kdotv', 'darling', 'invites', 'hedland', 'reliability', 'malaise', 'solving', 'estimation', 'sterling', 'employer', 'created', 'cruises', 'lovers', 'stairway', 'refi', 'exterminate', 'preparing', 'chantelleart', 'deprecatory', 'fertile', 'robertsl', 'richness', 'maill', 'agus', 'deject', 'tures', 'cosy', 'doublure', 'upgrade', 'qz', 'toinfo', 'hwjw', 'clothesman', 'expertise', 'pilot', 'trademarks', 'tokyo', 'plaque', 'cratch', 'xinlancenter', 'cat', 'minimums', 'accepts', 'confirmyour', 'revisi?n', 'zygoma', 'chhfb', 'viagr', 'skdclan', 'offers', 'oak', 'ull', 'wastewater', '011', 'kj', '353', 'biscayne', 'boost', 'renegotiable', 'suspended', 'misieading', '7596', 'forming', 'wiil', 'social', '1339', 'themail', 'outcrops', 'pak', 'point', 'diptych', 'level', 'watches', 'chlorophyll', 'incommodious', 'building', 'coldfusion', 'arena', 'labovitz', 'latershe', 'mapped', 'now', 'multiplier', 'curiosity', 'wachovia', 'shorten', 'lees', 'replicate', 'harmazmail', 'aro', 'neugierig', 'installation', 'nerveless', 'entries', 'uncanny', 'acel?rate', 'mufflers', 'domestic', 'endocrine', 'optioning', 'misappropriate', 'compose', 'destinatari', 'bfl', 'disconnected', 'clothed', 'father', 'recruits', 'gunslinger', 'perform', 'script', 'si', 'beijing', 'stolen', '33145', '92692', 'identiaiity', 'flonetwork', 'enhance', 'east', 'yommc', 'unsuitable', 'engagement', 'lawyer', 'herhangi', 'dolly', 'surcingle', 'credible', 'rico', 'expression', 'shredder', 'morning', 'approximate', 'waves', 'wilmont', 'misiniz', 'disregard', 'leading', 'critically', 'notebooks', 'massage', 'scratches', 'mediante', 'gefilmt', 'yof', '292', 'recruiter', 'baker', 'dunham', 'attractions', 'exercise', 'modules', '8821652098236', 'weatherwave', 'myths', 'babylom', 'drastic', '99', 'illumination', 'sender', 'fazer', 'inheritance', 'uit', 'changes', 'asking', 'dollie', 'clearwater', 'terrorist', 'lf', 'committed', 'running', 'fields', 'arisman', 'currently', 'kamuoyunu', 'streaky', 'feiras', 'feverfew', 'min', 'wv', 'viaspace', 'challenge', 'indicateyour', 'pray', 'cumg', 'flcg', 'constitutes', 'deal', 'marketeer', 'speedandlow', 'evil', 'irons', 'plainclothesman', 'armonline', 'execute', 'myway', '838089', 'junho', 'integrate', '07', 'baroda', 'decorator', 'skills', 'breeze', 'saucebox', 'futures', 'synchronism', 'hassle', 'estimate', 'returnfor', '90069', '=', 'shown', 'clear', 'tab', 'sweepstakes', 'appetite', 'ustomers', 'unethical', 'bloom', 'capitalspreads', 'dmshushhb', 'wherry', 'confidence', 'validate', 'pians', 'hcj', 'iilustrator', 'italy', 'jpl', 'flashlights', 'ourmailings', 'juvenil', 'plus', 'story', 'professors', '535', 'bondman', 'wallstreet', 'zkcc', 'chatterhead', '85396', 'phase', 'palms', 'violently', 'curiously', 'systemize', '1918', 'cathedra', 'lap', 'suitcase', 'khamchan', 'slice', 'principles', '657', 'japanese', 'roland', 'duty', 'manytimes', 'roads', '231', 'zedo', 'reversible', 'wow', 'moreover', 'townspeople', 'engag?s', 'networked', 'avail', 'prosperous', 'ebook', 'enginehouse', 'andmanyother', 'gusmer', 'paqemaker', '?er?evesinde', 'professiona', 'other', 'design', 'certificates', 'flat', 'linde', 'sloan', 'lack', 'pornstar', 'elliptical', 'stngvaol', 'systematical', 'mollie', '617', 'dorothy', 'bs', 'reunions', 'formations', 'dying', 'huckleberry', 'mullion', 'expenditures', 'layered', 'snappy', 'breadmaker', 'orchards', 'shear', 'tell', 'cigar', 'presented', 'enflamed', 'versand', 'lindquist', 'unlawful', 'turkish', 'km', 'unvarying', 'cobblestone', 'court', 'india', 'snoring', 'cartwheel', 'our', 'ok', 'offering', 'bass', 'declined', 'stopping', 'motocross', 'ap', 'fathom', 'gcqfzy', 'babiesare', 'somewhat', 'disease', 'require', 'changesfor', 'wh', 'mission', '1086', 'seventh', 'pedophile', 'ascertained', 'privaat', 'citrus', 'jud', 'mastery', 'bennigan', 'maximus', 'shona', 'billion', 'agape', '275', 'aurait', 'neol', 'reston', 'urlaubsfotos', 'rci', 'moment', 'isst', 'hear', 'resistor', 'tymon', 'flowering', 'ticket', 'download', 'rachel', 'wrinkle', 'deed', 'retool', 'keyring', 'solar', 'carpetbaggers', 'swamp', 'nlondon', '23100', 'judges', 'srbp', 'pledged', 'mc', 'tes', 'jeers', 'ocd', 'grandeur', 'obstacle', 'sommaire', 'pni', 'zby', '947', 'transcontinental', 'scsi', 'bot', 'lire', 'conniving', 'turner', 'momentarily', 'weasel', 'cancels', 'freer', 'blowing', 'roommate', 'cesd', 'subside', '8115', '5063', '2561', 'asb', 'anxiety', 'erg', 'ele', '245', 'flatulence', 'upgrading', 'punitive', 'ouest', 'kat', 'quarter', 'sclerosis', 'espa?ol', 'dispersed', 'elitist', 'destin', 'mp', 'bbbw', 'hello', 'decentralization', 'surf', 'application', 'transmit', 'seoul', 'farmer', 'angeles', 'france', 'blumenthal', '0ptd9', 'pcd', 'set', 'swears', 'redistributed', 'archive', 'jabs', 'wrs', 'detects', 'gram', 'candies', 'tractors', 'brewed', 'demand', 'model', 'rivers', 'airfare', 'innovating', 'slam', 'mary', 'mantra', 'marta', 'flagging', 'craftsman', 'sell', 'regarded', 'marketplace', '174', 'genuinely', 'allowance', 'mae', 'beckley', 'croix', 'truesport', 'idid', 'coupons', 'foundations', 'leonard', 'allow', 'complaints', 'kristin', 'evolve', 'roadsters', 'advertise', 'card', 'tense', 'submerged', 'cute', 'education', 'correctional', 'writings', 'hiernach', 'sent', 'awakening', 'recycled', 'bed', 'tristeza', '450', 'its', '3342', 'sympathy', 'apt', 'table', 'sewers', 'rufus', 'countryside', 'outsiders', 'jobsearch', 'falsely', 'hostel', 'dunlap', 'sharpened', 'extinguish', 'exposing', 'kpmg', 'restrictions', 'time', 'universities', 'foregoing', 'lightening', '462', 'methods', 'frequent', 'haunt', 'hearings', 'knew', 'tenia', 'cmci', 'minneapolis', 'nii', 'dust', 'meant', 'sitting', 'chance', 'amsterdam', 'tranquillity', 'tarasov', 'breathe', 'mazda', 'applied', 'rossie', 'wintv', 'nichole', 'unclaimed', 'emr', 'chambers', 'multitude', 'interactions', 'ahre', 'radiated', 'nossa', 'emergedsoon', 'desires', 'mod', 'scion', 'ucla', 'soth', '1045', 'tales', 'nethost', 'bothered', 'logistics', 'rumour', 'boca', '661', 'splashing', 'establish', 'mercato', 'river', 'bertha', 'warmed', 'mills', 'functions', 'christ', '4028', 'special', 'produce', 'calico', 'maroc', '8111', 'meditation', 'wadsworth', 'colored', '1177', 'dispositions', 'paperback', 'venice', 'cancellation', 'favorably', 'votetaylor', 'erased', 'avon', 'recieving', 'next', 'programme', 'catchers', 'pendant', 'someday', 'devout', 'soon', 'committedto', 'oh', 'casinos', '1062', 'fairway', 'georgia', 'amount', 'bottling', 'dispensing', '3d', 'espectro', 'platforms', 'wings', 'pedometer', 'des';
+
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();
+            const sentence = form.elements['sentence'].value.toLowerCase();
+            const words = sentence.split(' ');
+            let isSpam = false;
+            words.forEach(word => {
+                if (wordsToCompare.includes(word)) {
+                    isSpam = true;
+                }
+            });
+            if (isSpam) {
+                resultDiv.textContent = 'Spam';
+            } else {
+                resultDiv.textContent = 'Not Spam';
+            }
+        });
+    </script>
+</body>
+</html>
